@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gray-50: #f9fafb;
+  --color-gray-900: #111827;
+  /* Add other colors if needed, or rely on defaults */
+}
+
+/* 
+  In v4, we can just use standard CSS for body, 
+  or use @apply if we really want to, but @import "tailwindcss" should be enough.
+  Let's try to keep it simple.
+*/
+
+body {
+  @apply antialiased text-gray-900 bg-gray-50;
+}
