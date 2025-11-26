@@ -1,11 +1,35 @@
 import express from 'express';
 import { getFirestore, admin } from '../config/firebase.js';
+import { checkAndSendJITAIs } from '../scheduler.js';
 
 const router = express.Router();
 const db = getFirestore();
 
-// Check and send pending JITAIs
-router.post('/check-jitais', async (req, res) => {
+// Handler function for checking and sending JITAIs
+const handleCheckJITAIs = async (req, res) => {
+  try {
+    const result = await checkAndSendJITAIs();
+    res.json({ 
+      success: true, 
+      message: `JITAI check completed. Sent: ${result.sent}, Errors: ${result.errors}`,
+      sent: result.sent,
+      errors: result.errors,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error checking JITAIs:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Check and send pending JITAIs (POST for manual triggers)
+router.post('/check-jitais', handleCheckJITAIs);
+
+// Check and send pending JITAIs (GET for Vercel Cron Jobs)
+router.get('/check-jitais', handleCheckJITAIs);
+
+// Legacy endpoint - kept for backward compatibility
+router.post('/check-jitais-legacy', async (req, res) => {
   try {
     const now = new Date();
     const jitaisRef = db.collection('jitais');

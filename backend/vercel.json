@@ -2,23 +2,27 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/index.js",
+      "src": "api/index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "src/index.js"
+      "dest": "api/index.js"
     },
     {
       "src": "/health",
-      "dest": "src/index.js"
+      "dest": "api/index.js"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/notifications/check-jitais",
+      "schedule": "*/15 * * * *"
     }
   ],
   "env": {
     "NODE_ENV": "production"
   }
 }
-
-

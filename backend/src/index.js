@@ -33,27 +33,36 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'QuitWise Backend API' });
 });
 
-// Schedule JITAI checks every 15 minutes
-const JITAI_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
+// Schedule JITAI checks every 15 minutes (only for local development)
+// On Vercel, use Cron Jobs to call /api/notifications/check-jitais endpoint
+if (process.env.VERCEL !== '1') {
+  const JITAI_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
-setInterval(async () => {
-  try {
-    await checkAndSendJITAIs();
-  } catch (error) {
-    console.error('Error in scheduled JITAI check:', error);
-  }
-}, JITAI_CHECK_INTERVAL);
+  setInterval(async () => {
+    try {
+      await checkAndSendJITAIs();
+    } catch (error) {
+      console.error('Error in scheduled JITAI check:', error);
+    }
+  }, JITAI_CHECK_INTERVAL);
 
-// Run initial check after 1 minute (to allow server to start)
-setTimeout(async () => {
-  try {
-    await checkAndSendJITAIs();
-  } catch (error) {
-    console.error('Error in initial JITAI check:', error);
-  }
-}, 60000);
+  // Run initial check after 1 minute (to allow server to start)
+  setTimeout(async () => {
+    try {
+      await checkAndSendJITAIs();
+    } catch (error) {
+      console.error('Error in initial JITAI check:', error);
+    }
+  }, 60000);
+}
 
-app.listen(PORT, () => {
-  // Server started
-});
+// Export app for Vercel serverless functions
+export default app;
+
+// Only start server if running locally (not on Vercel)
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    // Server started
+  });
+}
 
