@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { getCBTLessons, getUserProfile, markLessonCompleted } from '../services/firebaseService';
 import Card from '../components/ui/Card';
@@ -16,19 +16,7 @@ const CBTLibrary: React.FC = () => {
   const [savingCompletion, setSavingCompletion] = useState(false);
   const { showToast } = useToast();
 
-  useEffect(() => {
-    loadLessons();
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      fetchCompletedLessons();
-    } else {
-      setCompletedLessons([]);
-    }
-  }, [user]);
-
-  const loadLessons = async () => {
+  const loadLessons = useCallback(async () => {
     try {
       // For now, use default lessons if Firebase doesn't have them
       const defaultLessons: CBTLesson[] = [
@@ -155,9 +143,9 @@ Most cravings peak within 5-10 minutes. If you can ride them out, they become ma
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
-  const fetchCompletedLessons = async () => {
+  const fetchCompletedLessons = useCallback(async () => {
     if (!user) {
       setCompletedLessons([]);
       return;
@@ -169,7 +157,19 @@ Most cravings peak within 5-10 minutes. If you can ride them out, they become ma
       console.error('Error loading completed lessons:', error);
       setCompletedLessons([]);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadLessons();
+  }, [loadLessons]);
+
+  useEffect(() => {
+    if (user) {
+      fetchCompletedLessons();
+    } else {
+      setCompletedLessons([]);
+    }
+  }, [user, fetchCompletedLessons]);
 
   const handleMarkCompleted = async () => {
     if (!user || !selectedLesson) {

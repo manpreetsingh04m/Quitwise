@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useProfile } from '../hooks/useProfile';
-import { getUserProfile, updateUserProfile } from '../services/firebaseService';
+import { updateUserProfile } from '../services/firebaseService';
 import { calculateStreak } from '../utils/time';
 import type { Reward } from '../types';
 import { rewards } from '../data/rewardsConfig';
@@ -12,19 +12,17 @@ import { useToast } from '../components/ui/ToastProvider';
 
 const Tokens: React.FC = () => {
   const { user } = useAuth();
-  const { profile, refreshProfile } = useProfile();
-  const [loading, setLoading] = useState(true);
-  const [streak, setStreak] = useState({ hours: 0, days: 0 });
+  const { profile, refreshProfile, loading: profileLoading } = useProfile();
   const [pendingReward, setPendingReward] = useState<Reward | null>(null);
   const { showToast } = useToast();
 
-  useEffect(() => {
-    if (profile) {
-      const lastUseTimestamp = profile.streakData?.lastUseTimestamp || null;
-      setStreak(calculateStreak(lastUseTimestamp));
-      setLoading(false);
-    }
+  const streak = useMemo(() => {
+    if (!profile) return { hours: 0, days: 0 };
+    const lastUseTimestamp = profile.streakData?.lastUseTimestamp || null;
+    return calculateStreak(lastUseTimestamp);
   }, [profile]);
+
+  const loading = profileLoading;
 
   const handleSyncTokens = async () => {
     if (!user || !profile) return;

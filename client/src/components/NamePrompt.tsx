@@ -1,17 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import Card from './ui/Card';
 import Button from './ui/Button';
-import { useProfile } from '../hooks/useProfile';
 import { useAuth } from '../hooks/useAuth';
 import { updateUserProfile } from '../services/firebaseService';
 import { useToast } from './ui/ToastProvider';
 
 const NamePrompt: React.FC = () => {
-  const { profile, loading, refreshProfile } = useProfile();
   const { user } = useAuth();
   const { showToast } = useToast();
   const [name, setName] = useState('');
   const [saving, setSaving] = useState(false);
+  const [profile, setProfile] = useState<{ displayName?: string } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Load profile directly to avoid context dependency issues
+  useEffect(() => {
+    if (!user) {
+      setProfile(null);
+      setLoading(false);
+      return;
+    }
+    const loadProfile = async () => {
+      try {
+        const { getUserProfile } = await import('../services/firebaseService');
+        const userProfile = await getUserProfile(user.uid);
+        setProfile(userProfile);
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProfile();
+  }, [user]);
+
   const shouldPrompt = !!user && !loading && !profile?.displayName;
 
   useEffect(() => {
@@ -28,7 +50,7 @@ const NamePrompt: React.FC = () => {
     try {
       setSaving(true);
       await updateUserProfile(user.uid, { displayName: name.trim() });
-      await refreshProfile();
+      setProfile({ ...profile, displayName: name.trim() });
       showToast({ title: 'Name saved', type: 'success' });
     } catch (error) {
       console.error('Error saving display name:', error);

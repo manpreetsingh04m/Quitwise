@@ -28,7 +28,6 @@ export const initializeFirebaseAdmin = () => {
     }
 
     firebaseAdminInitialized = true;
-    console.log('Firebase Admin initialized');
   } catch (error) {
     console.error('Error initializing Firebase Admin:', error);
     throw error;
@@ -48,4 +47,13 @@ export const getAuth = () => {
   }
   return admin.auth();
 };
+
+export const getMessaging = () => {
+  if (!firebaseAdminInitialized) {
+    initializeFirebaseAdmin();
+  }
+  return admin.messaging();
+};
+
+export { admin };
 

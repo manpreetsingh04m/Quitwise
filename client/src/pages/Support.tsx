@@ -170,6 +170,7 @@ const Support: React.FC = () => {
           </div>
         </div>
       </section>
+
     </div>
   );
 };

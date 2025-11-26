@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { createLogEntry, getUserLogs } from '../services/firebaseService';
 import Button from '../components/ui/Button';
@@ -14,13 +14,7 @@ const Log: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (user) {
-      loadLogs();
-    }
-  }, [user]);
-
-  const loadLogs = async () => {
+  const loadLogs = useCallback(async () => {
     if (!user) return;
     try {
       const userLogs = await getUserLogs(user.uid);
@@ -30,7 +24,13 @@ const Log: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      loadLogs();
+    }
+  }, [user, loadLogs]);
 
   const handleSubmit = async (logData: Omit<LogEntry, 'id' | 'userId' | 'timestamp'>) => {
     if (!user) return;

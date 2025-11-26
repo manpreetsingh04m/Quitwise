@@ -1,24 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { getUserProfile } from '../services/firebaseService';
 import { getUserAnalytics } from '../services/analyticsService';
 import Card from '../components/ui/Card';
-import { DollarSign, TrendingUp, Target, Calendar, PiggyBank } from 'lucide-react';
-import type { UserProfile, SavingsData, FinancialGoal } from '../types';
+import { DollarSign, TrendingUp, Target, PiggyBank } from 'lucide-react';
+import type { UserProfile, FinancialGoal, UserAnalytics } from '../types';
 
 const EconomicDashboard: React.FC = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [analytics, setAnalytics] = useState<any>(null);
+  const [analytics, setAnalytics] = useState<UserAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (user) {
-      loadData();
-    }
-  }, [user]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     if (!user) return;
     try {
       const [userProfile, userAnalytics] = await Promise.all([
@@ -32,7 +26,13 @@ const EconomicDashboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      loadData();
+    }
+  }, [user, loadData]);
 
   if (loading) {
     return <div className="text-center py-8">Loading...</div>;

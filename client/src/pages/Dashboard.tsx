@@ -8,7 +8,7 @@ import { calculateStreak } from '../utils/time';
 import type { UserProfile } from '../types';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import { Coins, Flame, ShieldCheck, PlusCircle, AlertCircle, BookOpen, Users, DollarSign } from 'lucide-react';
+import { Coins, Flame, ShieldCheck, PlusCircle, AlertCircle, BookOpen, Users, DollarSign, HeartHandshake } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -244,6 +244,18 @@ const Dashboard: React.FC = () => {
               <div>
                 <h3 className="font-semibold text-orange-900">Community</h3>
                 <p className="text-xs text-orange-700">Get support</p>
+              </div>
+            </div>
+          </Card>
+        </Link>
+
+        <Link to="/support">
+          <Card className="bg-pink-50 border-pink-100 hover:bg-pink-100 transition-colors cursor-pointer">
+            <div className="flex items-center space-x-3">
+              <HeartHandshake className="w-6 h-6 text-pink-600" />
+              <div>
+                <h3 className="font-semibold text-pink-900">Support</h3>
+                <p className="text-xs text-pink-700">Help & tools</p>
               </div>
             </div>
           </Card>

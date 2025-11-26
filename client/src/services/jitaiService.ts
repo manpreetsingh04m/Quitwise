@@ -1,4 +1,4 @@
-import type { LogEntry, UserProfile, JITAI } from '../types';
+import type { JITAI } from '../types';
 import { getUserLogs, getUserProfile, createJITAI } from './firebaseService';
 import { analyzeRiskWindows } from './analyticsService';
 

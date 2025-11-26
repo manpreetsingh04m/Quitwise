@@ -42,8 +42,8 @@ let analytics: ReturnType<typeof getAnalytics> | null = null;
 if (typeof window !== 'undefined') {
   try {
     analytics = getAnalytics(app);
-  } catch (error) {
-    console.warn('Firebase Analytics not available:', error);
+  } catch {
+    // Analytics not available
   }
 }
 
@@ -59,33 +59,77 @@ let messaging: ReturnType<typeof getMessaging> | null = null;
 if (typeof window !== 'undefined' && 'Notification' in window) {
   try {
     messaging = getMessaging(app);
-  } catch (error) {
-    console.warn('Firebase Messaging not available:', error);
+  } catch {
+    // Messaging not available
   }
 }
 
 export { messaging };
 
+// Register service worker for background notifications
+let serviceWorkerRegistration: ServiceWorkerRegistration | null = null;
+
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register('/firebase-messaging-sw.js')
+    .then((registration) => {
+      serviceWorkerRegistration = registration;
+    })
+    .catch(() => {
+      // Service Worker registration failed
+    });
+}
+
 // Request notification permission and get token
 export const requestNotificationPermission = async (): Promise<string | null> => {
-  if (!messaging) return null;
+  if (!messaging) {
+    throw new Error('Firebase Messaging is not available');
+  }
   
   try {
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-      const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
-      if (!vapidKey) {
-        throw new Error('Missing VITE_FIREBASE_VAPID_KEY for push notifications');
+    // Ensure service worker is registered and ready
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        serviceWorkerRegistration = registration;
+      } catch {
+        // Try to register if not already registered
+        if (!serviceWorkerRegistration) {
+          serviceWorkerRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+        }
       }
-      const token = await getToken(messaging, {
-        vapidKey,
-      });
-      return token;
     }
+
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      throw new Error('Notification permission was not granted');
+    }
+
+    const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
+    if (!vapidKey) {
+      throw new Error('Missing VITE_FIREBASE_VAPID_KEY for push notifications. Please add it to your .env file.');
+    }
+
+    // Get token with service worker registration
+    const tokenOptions: { vapidKey: string; serviceWorkerRegistration?: ServiceWorkerRegistration } = {
+      vapidKey,
+    };
+    
+    if (serviceWorkerRegistration) {
+      tokenOptions.serviceWorkerRegistration = serviceWorkerRegistration;
+    }
+
+    const token = await getToken(messaging, tokenOptions);
+    
+    if (!token) {
+      throw new Error('Failed to get FCM token. Make sure the service worker is properly registered.');
+    }
+
+    return token;
   } catch (error) {
     console.error('Error getting notification token:', error);
+    throw error;
   }
-  return null;
 };
 
 // Listen for foreground messages

@@ -17,7 +17,7 @@ export const calculateSavings = (
     };
   }
 
-  const { costPerUnit, dailySpending } = userProfile.assessment.economicProfile;
+  const { costPerUnit } = userProfile.assessment.economicProfile;
   const dailyUsage = userProfile.assessment.psychologicalProfile?.frequency || 0;
   const dailyCost = dailyUsage * costPerUnit;
 

@@ -27,10 +27,23 @@ import type {
   Comment,
 } from '../types';
 
-const removeUndefined = <T extends Record<string, any>>(data: T): T =>
-  Object.fromEntries(
-    Object.entries(data).filter(([, value]) => value !== undefined)
-  ) as T;
+const removeUndefined = <T extends Record<string, unknown>>(data: T): T => {
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(data)) {
+    if (value === undefined) {
+      continue;
+    }
+    if (value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Date)) {
+      const cleaned = removeUndefined(value as Record<string, unknown>);
+      if (Object.keys(cleaned).length > 0) {
+        result[key] = cleaned;
+      }
+    } else {
+      result[key] = value;
+    }
+  }
+  return result as T;
+};
 
 // User Profile Operations
 export const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
@@ -116,7 +129,7 @@ export const getUserLogs = async (
   limitCount: number = 100
 ): Promise<LogEntry[]> => {
   try {
-    let q = query(
+    const q = query(
       collection(db, 'logs'),
       where('userId', '==', uid),
       orderBy('timestamp', 'desc'),

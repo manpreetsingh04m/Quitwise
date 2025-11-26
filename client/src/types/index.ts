@@ -115,7 +115,7 @@ export interface CBTExercise {
   title: string;
   type: "thought-record" | "trigger-response" | "problem-solving";
   instructions: string;
-  template?: any;
+  template?: Record<string, unknown>;
 }
 
 // Commitment Contract
@@ -221,7 +221,9 @@ export interface UserProfile {
   commitmentContract?: CommitmentContract;
   selfRewards: SelfReward[];
   completedLessons?: string[];
-  notificationToken?: string;
+  token?: string; // Firebase Cloud Messaging token for push notifications
+  fcmToken?: string; // Legacy field name (deprecated, use token)
+  notificationToken?: string; // Legacy field name (deprecated, use token)
 }
 
 export interface SelfReward {
