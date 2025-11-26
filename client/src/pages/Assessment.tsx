@@ -352,10 +352,11 @@ const PsychologicalProfileForm: React.FC<{
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="frequency-input" className="block text-sm font-medium text-gray-700 mb-2">
                 How many times per day do you vape/smoke?
               </label>
               <input
+                id="frequency-input"
                 type="number"
                 min="0"
                 value={frequency === 0 ? "" : frequency}
@@ -413,10 +414,11 @@ const PsychologicalProfileForm: React.FC<{
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="motivation-slider" className="block text-sm font-medium text-gray-700 mb-2">
                 How important is quitting to you? (1-10)
               </label>
               <input
+                id="motivation-slider"
                 type="range"
                 min="1"
                 max="10"
@@ -432,10 +434,11 @@ const PsychologicalProfileForm: React.FC<{
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="confidence-slider" className="block text-sm font-medium text-gray-700 mb-2">
                 How confident are you that you can quit? (1-10)
               </label>
               <input
+                id="confidence-slider"
                 type="range"
                 min="1"
                 max="10"
@@ -456,10 +459,11 @@ const PsychologicalProfileForm: React.FC<{
               </p>
 
               <div>
-                <label className="block text-xs text-gray-600 mb-1">
+                <label htmlFor="anxiety-slider" className="block text-xs text-gray-600 mb-1">
                   Anxiety
                 </label>
                 <input
+                  id="anxiety-slider"
                   type="range"
                   min="1"
                   max="10"
@@ -467,13 +471,19 @@ const PsychologicalProfileForm: React.FC<{
                   onChange={(e) => setAnxiety(parseInt(e.target.value))}
                   className="w-full"
                 />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>Low (1)</span>
+                  <span className="font-bold text-blue-600">{anxiety}</span>
+                  <span>High (10)</span>
+                </div>
               </div>
 
               <div>
-                <label className="block text-xs text-gray-600 mb-1">
+                <label htmlFor="depression-slider" className="block text-xs text-gray-600 mb-1">
                   Depression
                 </label>
                 <input
+                  id="depression-slider"
                   type="range"
                   min="1"
                   max="10"
@@ -481,13 +491,19 @@ const PsychologicalProfileForm: React.FC<{
                   onChange={(e) => setDepression(parseInt(e.target.value))}
                   className="w-full"
                 />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>Low (1)</span>
+                  <span className="font-bold text-blue-600">{depression}</span>
+                  <span>High (10)</span>
+                </div>
               </div>
 
               <div>
-                <label className="block text-xs text-gray-600 mb-1">
+                <label htmlFor="stress-slider" className="block text-xs text-gray-600 mb-1">
                   Stress
                 </label>
                 <input
+                  id="stress-slider"
                   type="range"
                   min="1"
                   max="10"
@@ -495,6 +511,11 @@ const PsychologicalProfileForm: React.FC<{
                   onChange={(e) => setStress(parseInt(e.target.value))}
                   className="w-full"
                 />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>Low (1)</span>
+                  <span className="font-bold text-blue-600">{stress}</span>
+                  <span>High (10)</span>
+                </div>
               </div>
             </div>
 
@@ -558,10 +579,11 @@ const EconomicProfileForm: React.FC<{
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="cost-per-unit-input" className="block text-sm font-medium text-gray-700 mb-2">
                 Cost per cigarette/pod (₹)
               </label>
               <input
+                id="cost-per-unit-input"
                 type="number"
                 min="0"
                 step="0.01"
@@ -727,10 +749,11 @@ const QuitGoalForm: React.FC<{
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="quit-date-input" className="block text-sm font-medium text-gray-700 mb-2">
                 Quit Date
               </label>
               <input
+                id="quit-date-input"
                 type="date"
                 min={minDate}
                 value={quitDate}
@@ -742,10 +765,11 @@ const QuitGoalForm: React.FC<{
 
             {strategy === "tapering" && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="max-per-day-input" className="block text-sm font-medium text-gray-700 mb-2">
                   Maximum per day during tapering
                 </label>
                 <input
+                  id="max-per-day-input"
                   type="number"
                   min="1"
                   max={psychologicalProfile.frequency || 20}

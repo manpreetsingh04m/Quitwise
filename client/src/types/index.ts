@@ -238,7 +238,7 @@ export interface SelfReward {
 export interface Question {
   id: number;
   text: string;
-  category: "psychological" | "economic" | "general";
+  category: "initial" | "trigger-thought" | "daily-craving" | "relapse-reflection" | "psychological" | "economic" | "general";
   options: {
     text: string;
     score: number;
