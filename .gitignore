@@ -21,6 +21,9 @@ build
 .env.local
 .env.*.local
 
+# Generated service worker (contains sensitive config)
+client/public/firebase-messaging-sw.js
+
 # Setup and implementation docs (not needed in repo)
 SETUP.md
 IMPLEMENTATION.md

@@ -7,13 +7,13 @@ importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-comp
 
 // Initialize Firebase in the service worker
 const firebaseConfig = {
-  apiKey: "AIzaSyCCDj0DLvffj-DA7e5pvfZhH7igHwQGvvw",
-  authDomain: "quitwise-45b2e.firebaseapp.com",
-  projectId: "quitwise-45b2e",
-  storageBucket: "quitwise-45b2e.firebasestorage.app",
-  messagingSenderId: "727662575616",
-  appId: "1:727662575616:web:caddf493d2090fddc298e5",
-  measurementId: "G-WD8WZ62ZDD"
+  apiKey: "{{VITE_FIREBASE_API_KEY}}",
+  authDomain: "{{VITE_FIREBASE_AUTH_DOMAIN}}",
+  projectId: "{{VITE_FIREBASE_PROJECT_ID}}",
+  storageBucket: "{{VITE_FIREBASE_STORAGE_BUCKET}}",
+  messagingSenderId: "{{VITE_FIREBASE_MESSAGING_SENDER_ID}}",
+  appId: "{{VITE_FIREBASE_APP_ID}}",
+  measurementId: "{{VITE_FIREBASE_MEASUREMENT_ID}}"
 };
 
 firebase.initializeApp(firebaseConfig);
