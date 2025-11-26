@@ -18,7 +18,13 @@ const PORT = process.env.PORT || 3001;
 initializeFirebaseAdmin();
 
 // Middleware
-app.use(cors());
+// CORS configuration - allow requests from frontend
+app.use(cors({
+  origin: process.env.FRONTEND_URL || '*', // Allow all origins in development, set FRONTEND_URL in production
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json());
 
 // Routes
