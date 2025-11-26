@@ -38,7 +38,9 @@ const Tokens: React.FC = () => {
         await updateUserProfile(user.uid, {
           tokens: newTokens,
           streakData: {
-            ...profile.streakData,
+            currentStreak: profile.streakData?.currentStreak || 0,
+            longestStreak: profile.streakData?.longestStreak || 0,
+            lastUseTimestamp: profile.streakData?.lastUseTimestamp || null,
             streakHours: hours,
           },
         });
